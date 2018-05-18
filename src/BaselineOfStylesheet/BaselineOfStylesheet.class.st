@@ -14,9 +14,9 @@ BaselineOfStylesheet >> baseline: spec [
 		for: #pharo
 		do: [ 
 			spec
-				package: 'Stylesheet'.
+				package: 'Stylesheet-Core'.
 			spec
 				package: 'Stylesheet-Tests'
-				with: [ spec requires: #('Stylesheet') ].
+				with: [ spec requires: #('Stylesheet-Core') ].
 			]
 ]
