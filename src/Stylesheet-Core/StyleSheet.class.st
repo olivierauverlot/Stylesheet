@@ -1,19 +1,12 @@
 "
-A PDFStyleSheet define style for PDFElements to separate presentation from contents. A styleSheet can have substyles to define properties specifics to a context
+A PDFStyleSheet define style for PDFElements to separate presentation from contents. A styleSheet can have substyles to define properties specifics to a context.
+
+The default substyle of a stylesheet is itself. This way we can also refers to the parent.
 
 Instance Variables
 	attributes:		<Object>
 	document:		<Object>
 	substyles:		<Object>
-
-attributes
-	- xxxxx
-
-document
-	- xxxxx
-
-substyles
-	- xxxxx
 
 "
 Class {
@@ -29,6 +22,7 @@ Class {
 
 { #category : #action }
 StyleSheet >> + aStyleSheet [
+
 	| newStyleSheet |
 	newStyleSheet := self copy.
 	aStyleSheet attributes keysAndValuesDo: [:aKey :aValue | newStyleSheet attributes at: aKey put: aValue ].
@@ -37,17 +31,26 @@ StyleSheet >> + aStyleSheet [
 	^ newStyleSheet
 ]
 
-{ #category : #accessing }
+{ #category : #'private-accessors' }
 StyleSheet >> > aSymbol [
+	"Access a substyles named aSymbol, creates it if not defined."
+	
 	^ self substyles at: aSymbol ifAbsentPut: [ self class new ]
 ]
 
-{ #category : #private }
+{ #category : #'public access' }
+StyleSheet >> at: anAttributeSymbol [
+	"Return the value of an attribute given its key anAttributeSymbol"
+	
+	^ attributes at: anAttributeSymbol
+]
+
+{ #category : #'public access' }
 StyleSheet >> at: anAttribute put: aValue [
 	attributes at: anAttribute put: aValue 
 ]
 
-{ #category : #accessing }
+{ #category : #'private-accessors' }
 StyleSheet >> attributes [
 	^ attributes
 ]
@@ -62,18 +65,20 @@ StyleSheet >> customizeWith: aStyledElement [
 	self dynamicCustomization ifNotNil: [ self dynamicCustomization cull: self cull: aStyledElement ]
 ]
 
-{ #category : #accessing }
+{ #category : #'private-accessors' }
 StyleSheet >> dynamicCustomization [
 	^ dynamicCustomization
 ]
 
-{ #category : #accessing }
+{ #category : #'private-accessors' }
 StyleSheet >> dynamicCustomization: anObject [
 	dynamicCustomization := anObject
 ]
 
-{ #category : #private }
+{ #category : #'public access' }
 StyleSheet >> get: anAttribute [
+	self deprecated: 'Use at: instead!' transformWith: '`@receiver get: `@statements1' 
+						-> '`@receiver at: `@statements1'.
 	^ attributes at: anAttribute
 ]
 
@@ -82,14 +87,14 @@ StyleSheet >> includesAnySubstyles: aCollectionOfSubstyles [
 	^ self substyles keys includesAny: aCollectionOfSubstyles 
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #initialization }
 StyleSheet >> initialize [
 	super initialize.
 	attributes := Dictionary new.
 	self initializeSubstyles.
 ]
 
-{ #category : #'initialize-release' }
+{ #category : #initialization }
 StyleSheet >> initializeSubstyles [
 	substyles := Dictionary new.
 	substyles at: #default put: self
@@ -97,14 +102,15 @@ StyleSheet >> initializeSubstyles [
 
 { #category : #copying }
 StyleSheet >> postCopy [
+	super postCopy.
 	attributes := attributes copy.
 	substyles := substyles copy.
 	substyles at: #default put: self.
 ]
 
 { #category : #removing }
-StyleSheet >> remove: anAttribute [
-	attributes removeKey: anAttribute
+StyleSheet >> remove: anAttributeSymbol [
+	attributes removeKey: anAttributeSymbol
 ]
 
 { #category : #removing }
@@ -112,14 +118,14 @@ StyleSheet >> removeAll: aCollectionOfAttributes [
 	aCollectionOfAttributes do: [:anAttribute | self remove: anAttribute]
 ]
 
-{ #category : #accessing }
+{ #category : #'private-accessors' }
 StyleSheet >> substyles [
 	^ substyles
 ]
 
-{ #category : #accessing }
-StyleSheet >> substyles: anObject [
-	substyles := anObject
+{ #category : #'private-accessors' }
+StyleSheet >> substyles: aStylesheet [
+	substyles := aStylesheet
 ]
 
 { #category : #copying }
