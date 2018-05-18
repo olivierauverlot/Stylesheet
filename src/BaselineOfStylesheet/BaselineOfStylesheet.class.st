@@ -7,9 +7,7 @@ Class {
 { #category : #baselines }
 BaselineOfStylesheet >> baseline: spec [
 	<baseline>
-	spec
-		baseline: 'Stylesheet'
-		with: [ spec repository: 'github://olivierauverlot/Stylesheet' ].
+	
 	spec
 		for: #pharo
 		do: [ 
